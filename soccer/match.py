@@ -35,7 +35,7 @@ class Match:
         self.closest_player = None
         self.ball = None
         # Amount of consecutive frames new team has to have the ball in order to change possession
-        self.possesion_counter_threshold = 20
+        self.possession_counter_threshold = 20
         # Distance in pixels from player to ball in order to consider a player has the ball
         self.ball_distance_threshold = 45
         self.fps = fps
@@ -95,7 +95,7 @@ class Match:
         self.possession_counter += 1
 
         if (
-            self.possession_counter >= self.possesion_counter_threshold
+            self.possession_counter >= self.possession_counter_threshold
             and closest_player.team is not None
         ):
             self.change_team(self.current_team)
