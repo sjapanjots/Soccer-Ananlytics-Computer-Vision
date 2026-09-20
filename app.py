@@ -143,6 +143,19 @@ def hex_to_rgb(hex_color: str) -> tuple:
     return tuple(int(h[i : i + 2], 16) for i in (0, 2, 4))
 
 
+# ── Cached detector factory ─────────────────────────────────────────────────
+@st.cache_resource(show_spinner="Loading object detection models...")
+def get_detectors(model_path):
+    """Create the player and ball detectors once per model path.
+
+    Models are cached in-process so Streamlit reruns and repeated
+    processing clicks do not reload (~350MB) weights every time.
+    """
+    player_detector = YoloV5()
+    ball_detector = YoloV5(model_path=model_path)
+    return player_detector, ball_detector
+
+
 # ── Helper: Ensure counter board images exist ───────────────────────────────
 def ensure_board_images() -> bool:
     """Create missing possession/pass counter boards so match drawing works.
@@ -236,9 +249,8 @@ def process_video(
     fps = video.video_capture.get(cv2.CAP_PROP_FPS)
     total_frames = int(video.video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    # Detectors
-    player_detector = YoloV5()
-    ball_detector = YoloV5(model_path=model_path)
+    # Detectors (cached — reused across reruns and processing clicks)
+    player_detector, ball_detector = get_detectors(model_path)
 
     # Classifier
     hsv_classifier = HSVClassifier(filters=filters)
