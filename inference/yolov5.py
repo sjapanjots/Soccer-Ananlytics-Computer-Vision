@@ -28,15 +28,19 @@ class YoloV5(BaseDetector):
         if model_path and not os.path.exists(model_path):
             print(
                 f"Custom model not found at {model_path}; "
-                "falling back to COCO-pretrained yolov5x."
+                "falling back to COCO-pretrained yolov5."
             )
             model_path = None
 
         if model_path:
             self.model = torch.hub.load("ultralytics/yolov5", "custom", path=model_path)
         else:
+            size = os.environ.get("YOLO_V5_SIZE", "s")
+            if size not in "nsmlx":
+                size = "s"
+            print(f"Loading COCO-pretrained yolov5{size}.")
             self.model = torch.hub.load(
-                "ultralytics/yolov5", "yolov5x", pretrained=True
+                "ultralytics/yolov5", f"yolov5{size}", pretrained=True
             )
 
     def predict(self, input_image: List[np.ndarray]) -> pd.DataFrame:
