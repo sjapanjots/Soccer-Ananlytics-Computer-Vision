@@ -212,6 +212,40 @@ The annotated output video is written next to the input file.
 
 ---
 
+## ☁️ Deploy on Streamlit Community Cloud
+
+This project is ready to run on [Streamlit Community Cloud](https://share.streamlit.io) (free tier). The app entry point is `app.py` and everything is already configured for cloud builds.
+
+### Steps
+
+1. Push this repository to GitHub (already done — it lives at `sjapanjots/Soccer-Ananlytics-Computer-Vision`).
+2. Go to <https://share.streamlit.io> → **New app** → select the repo, branch `main`, and main file `app.py`.
+3. In **Advanced settings**:
+   - Python version: **3.11**
+   - No secrets needed.
+4. Click **Deploy**. The build installs the CPU-only `torch` (small, fast) via the pinned `+cpu` wheels in `requirements.txt`.
+
+### Cloud-friendly defaults
+
+| Setting | Value | Why |
+|---------|-------|-----|
+| `requirements.txt` | CPU-only `torch==2.2.2+cpu` | Avoids the ~2.5GB CUDA wheel that stalls free-tier builds |
+| `YOLO_V5_SIZE` | `s` (default) | Uses the light `yolov5s` COCO weights (~14MB) so the app fits in 1GB RAM and runs on CPU |
+| Detectors | Cached with `@st.cache_resource` | Model weights are loaded once, not on every rerun/click |
+| Board images | Generated at runtime | `*.png` is gitignored, so placeholders are created on first run |
+
+### Environment variables
+
+- `YOLO_V5_SIZE` — COCO YOLOv5 size used when no custom ball model is present (`n`, `s`, `m`, `l`, `x`; default `s`). Set it to `x` in Advanced settings (or `$env:YOLO_V5_SIZE="x"` locally) to restore the original heavier model.
+- Supply a custom `models/ball.pt` inside the repo if you want a dedicated ball detector instead of the `sports ball` class fallback.
+
+### Free-tier caveats
+
+- Processing happens on the cloud CPU — keep test clips short (15–30s).
+- The app sleeps after inactivity; the first request after waking takes longer as weights reload.
+
+---
+
 ## ⚙️ Customization
 
 ### Add or change teams
