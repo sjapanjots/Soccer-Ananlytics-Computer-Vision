@@ -230,6 +230,7 @@ This project is ready to run on [Streamlit Community Cloud](https://share.stream
 | Setting | Value | Why |
 |---------|-------|-----|
 | `requirements.txt` | CPU-only `torch==2.2.2+cpu` | Avoids the ~2.5GB CUDA wheel that stalls free-tier builds |
+| `ultralytics` | Pinned dependency | Required by the current `ultralytics/yolov5` hub repo |
 | `YOLO_V5_SIZE` | `s` (default) | Uses the light `yolov5s` COCO weights (~14MB) so the app fits in 1GB RAM and runs on CPU |
 | Detectors | Cached with `@st.cache_resource` | Model weights are loaded once, not on every rerun/click |
 | Board images | Generated at runtime | `*.png` is gitignored, so placeholders are created on first run |
@@ -237,7 +238,7 @@ This project is ready to run on [Streamlit Community Cloud](https://share.stream
 ### Environment variables
 
 - `YOLO_V5_SIZE` — COCO YOLOv5 size used when no custom ball model is present (`n`, `s`, `m`, `l`, `x`; default `s`). Set it to `x` in Advanced settings (or `$env:YOLO_V5_SIZE="x"` locally) to restore the original heavier model.
-- Supply a custom `models/ball.pt` inside the repo if you want a dedicated ball detector instead of the `sports ball` class fallback.
+- Supply a custom `models/ball.pt` inside the repo if you want a dedicated ball detector instead of the `sports ball` class fallback. Because `*.pt` is gitignored, force-add it if you want it deployed: `git add -f models/ball.pt` (or download it directly on the cloud machine).
 
 ### Free-tier caveats
 
