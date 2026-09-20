@@ -101,8 +101,10 @@ Soccer-Ananlytics-Computer-Vision/
 │   └── draw.py           # Trajectory & overlay drawing utilities
 ├── fonts/                # Font used for overlay text (Gidole-Regular.ttf)
 ├── images/               # Background boards for possession/pass counters
+├── app.py                # Streamlit web frontend
 ├── run.py                # Main entry point
 ├── run_utils.py          # Detection filtering & motion estimation helpers
+├── requirements.txt      # pip-installable dependencies (incl. Streamlit)
 └── pyproject.toml        # Poetry project configuration
 ```
 
@@ -147,9 +149,39 @@ Soccer-Ananlytics-Computer-Vision/
    poetry shell
    ```
 
+   Alternatively, install dependencies with `pip`:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
 ---
 
 ## 🚀 Usage
+
+### Web Frontend (Streamlit)
+
+The project ships with a Streamlit web app that lets you configure everything
+from the browser:
+
+```bash
+streamlit run app.py
+```
+
+In the app you can:
+
+- **Upload** a video file (mp4, avi, mov, mkv)
+- **Configure teams** — names, abbreviations, overlay colors
+- **Tune HSV jersey filters** — pick predefined kit colors (blue, red,
+  sky_blue, ...) per team or define fully custom HSV ranges
+- **Adjust trackers & match logic** — distance thresholds, possession-change
+  sensitivity, classification inertia
+- **Toggle features** — possession counter, pass detection, player IDs
+- **Process** the video with a live progress bar
+- **Review results** — play/download the annotated video and see possession
+  time and pass counts per team
+
+### CLI
 
 Run the full pipeline (possession + passes):
 
