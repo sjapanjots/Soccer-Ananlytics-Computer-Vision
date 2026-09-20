@@ -122,7 +122,7 @@ for i, frame in enumerate(video):
     )
 
     # Match update
-    ball = get_main_ball(ball_detections)
+    ball = get_main_ball(ball_detections, match)
     players = Player.from_detections(detections=players_detections, teams=teams)
     match.update(players, ball)
 
