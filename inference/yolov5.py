@@ -1,5 +1,7 @@
 from typing import List
 
+import os
+
 import numpy as np
 import pandas as pd
 import torch
@@ -22,6 +24,13 @@ class YoloV5(BaseDetector):
         """
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         print(self.device)
+
+        if model_path and not os.path.exists(model_path):
+            print(
+                f"Custom model not found at {model_path}; "
+                "falling back to COCO-pretrained yolov5x."
+            )
+            model_path = None
 
         if model_path:
             self.model = torch.hub.load("ultralytics/yolov5", "custom", path=model_path)

@@ -31,6 +31,12 @@ def get_ball_detections(
     """
     ball_df = ball_detector.predict(frame)
     ball_df = ball_df[ball_df["confidence"] > 0.3]
+
+    # When using the COCO-pretrained fallback, keep only "sports ball" detections.
+    # Custom ball models are left untouched (they only detect balls).
+    if "sports ball" in ball_df["name"].values:
+        ball_df = ball_df[ball_df["name"] == "sports ball"]
+
     return Converter.DataFrame_to_Detections(ball_df)
 
 

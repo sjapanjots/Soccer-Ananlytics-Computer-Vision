@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import cv2
 import numpy as np
@@ -45,6 +46,15 @@ video = Video(input_path=args.video)
 fps = video.video_capture.get(cv2.CAP_PROP_FPS)
 
 # Object Detectors
+if args.model and os.path.exists(args.model):
+    print(f"Using custom ball model: {args.model}")
+else:
+    print(
+        f"Custom ball model '{args.model}' not found; "
+        "using COCO-pretrained yolov5x with the 'sports ball' class."
+    )
+    args.model = None
+
 player_detector = YoloV5()
 ball_detector = YoloV5(model_path=args.model)
 

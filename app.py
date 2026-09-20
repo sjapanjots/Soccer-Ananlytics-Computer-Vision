@@ -423,13 +423,17 @@ if st.button("🚀 Process Video", type="primary", use_container_width=True):
             st.error(f"HSV filter configuration error: {e}")
             st.stop()
 
-        # Check if model exists
-        if not os.path.exists(model_path):
-            st.error(
-                f"Ball model not found at `{model_path}`. "
-                "Please provide a valid path to your custom YOLOv5 ball detection model (.pt)."
+        # Ball model: fall back to the COCO "sports ball" class when no
+        # custom model is available at the provided path.
+        if model_path and os.path.exists(model_path):
+            st.info(f"Using custom ball model: `{model_path}`")
+        else:
+            model_path = None
+            st.warning(
+                "Custom ball model not found. Falling back to the COCO "
+                "'sports ball' class. For best accuracy, place your custom "
+                "YOLOv5 model at `models/ball.pt`."
             )
-            st.stop()
 
         # Ensure counter board images exist
         ensure_board_images()
