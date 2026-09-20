@@ -877,7 +877,7 @@ class AbsolutePath:
         path_filtered = self.filter_points_outside_frame(
             path=path,
             width=img.size[0],
-            height=img.size[0],
+            height=img.size[1],
             margin=250,
         )
 
