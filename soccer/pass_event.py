@@ -54,7 +54,7 @@ class Pass:
         pass_filtered = self.draw_abs.filter_points_outside_frame(
             path=new_pass,
             width=img.size[0],
-            height=img.size[0],
+            height=img.size[1],
             margin=3000,
         )
 
