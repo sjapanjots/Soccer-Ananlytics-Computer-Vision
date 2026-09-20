@@ -2,14 +2,11 @@ import json
 import os
 from abc import ABC, abstractmethod
 from typing import Counter, List, Tuple
-
 import cv2
 import norfair
 import numpy as np
 import pandas as pd
-
 from inference.box import Box
-
 
 class BaseClassifier(ABC):
     @abstractmethod
