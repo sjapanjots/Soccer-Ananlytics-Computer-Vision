@@ -151,7 +151,6 @@ class BaseDetector(ABC):
 
         return images
 
-    @staticmethod
     def draw(self, predictions: pd.DataFrame, img: np.ndarray) -> np.ndarray:
         """
         Draws the bounding boxes on the image
