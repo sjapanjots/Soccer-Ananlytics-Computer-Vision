@@ -203,13 +203,14 @@ class Player:
         return f"Player: {self.feet}, team: {self.team}"
 
     def __eq__(self, other: "Player") -> bool:
-        if isinstance(self, Player) == False or isinstance(other, Player) == False:
+        if not isinstance(other, Player):
+            return False
+        if self.detection is None or other.detection is None:
+            return False
+        if "id" not in self.detection.data or "id" not in other.detection.data:
             return False
 
-        self_id = self.detection.data["id"]
-        other_id = other.detection.data["id"]
-
-        return self_id == other_id
+        return self.detection.data["id"] == other.detection.data["id"]
 
     @staticmethod
     def have_same_id(player1: "Player", player2: "Player") -> bool:
