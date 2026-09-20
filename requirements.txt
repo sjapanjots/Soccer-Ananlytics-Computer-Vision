@@ -2,6 +2,7 @@ norfair @ git+https://github.com/tryolabs/norfair.git@master
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.2.2+cpu
 torchvision==0.17.2+cpu
+ultralytics>=8.2.0
 opencv-python>=4.6.0.66
 numpy>=1.23.4,<2
 Pillow>=9.2.0
