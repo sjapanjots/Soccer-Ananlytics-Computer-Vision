@@ -32,15 +32,19 @@ class YoloV5(BaseDetector):
             )
             model_path = None
 
+        # trust_repo=True: torch hub asks for confirmation on interactive
+        # (and would hang/fail on CI and Streamlit Cloud) since torch >= 2.1.
         if model_path:
-            self.model = torch.hub.load("ultralytics/yolov5", "custom", path=model_path)
+            self.model = torch.hub.load(
+                "ultralytics/yolov5", "custom", path=model_path, trust_repo=True
+            )
         else:
             size = os.environ.get("YOLO_V5_SIZE", "s")
             if size not in "nsmlx":
                 size = "s"
             print(f"Loading COCO-pretrained yolov5{size}.")
             self.model = torch.hub.load(
-                "ultralytics/yolov5", f"yolov5{size}", pretrained=True
+                "ultralytics/yolov5", f"yolov5{size}", pretrained=True, trust_repo=True
             )
 
     def predict(self, input_image: List[np.ndarray]) -> pd.DataFrame:
