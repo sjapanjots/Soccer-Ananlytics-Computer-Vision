@@ -211,7 +211,7 @@ class HSVClassifier(BaseClassifier):
         if type(filter["name"]) != str:
             raise ValueError("Filter name must be a string")
 
-        if type(filter["colors"]) != list and type(filter["colors"] != tuple):
+        if type(filter["colors"]) != list and type(filter["colors"]) != tuple:
             raise ValueError("Filter colors must be a list or tuple")
 
         filter["colors"] = [
