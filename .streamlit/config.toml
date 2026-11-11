@@ -4,3 +4,6 @@ primaryColor = "#4CAF50"
 
 [browser]
 gatherUsageStats = false
+[server]
+# Match clips can be large; default limit is 200 MB.
+maxUploadSize = 2048
