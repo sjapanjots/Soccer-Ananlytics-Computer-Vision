@@ -136,3 +136,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# v2 pipeline
+models/
+videos/
+outputs/
+*.engine
