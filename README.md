@@ -18,6 +18,7 @@ AI-powered soccer match analysis straight from raw video footage. This project u
 - [Usage](#-usage)
 - [Customization](#-customization)
 - [Tech Stack](#-tech-stack)
+- [v2 Pipeline](#-v2-pipeline-pretrained-football-models)
 - [License](#-license)
 - [Acknowledgments](#-acknowledgments)
 
@@ -295,6 +296,70 @@ Tracker sensitivity (distance thresholds, hit counters, initialization delay) is
 - [Pillow](https://python-pillow.org/) — overlay rendering
 - [NumPy](https://numpy.org/) / [Pandas](https://pandas.pydata.org/) — data processing
 - [Poetry](https://python-poetry.org/) — dependency management
+
+---
+
+## ⚡ v2 Pipeline: Pretrained Football Models
+
+A faster, fully automatic pipeline that lives next to the original one
+(`football_analytics/`, `analyze.py`, `streamlit_app.py`). The original
+`app.py` / `run.py` are unchanged.
+
+| | v1 (`app.py`, `run.py`) | v2 (`streamlit_app.py`, `analyze.py`) |
+|---|---|---|
+| Detection | YOLOv5 via `torch.hub` + custom `ball.pt` you must supply | Ultralytics YOLO with free pretrained football weights from [roboflow/sports](https://github.com/roboflow/sports) (player, goalkeeper, referee, ball) - no training |
+| Tracking | Norfair | ByteTrack ([roboflow/trackers](https://github.com/roboflow/trackers)) |
+| Teams | Jersey colours configured by hand | K-Means on kit colour - automatic, any two teams |
+| Possession radius | Fixed pixels | Relative to player height (any zoom / resolution) |
+| Output | `mp4v` | H.264 (plays in the browser) + `summary.json`, `events.csv`, `possession_timeline.csv` |
+| Speed | 2 models every frame | 1 model, FP16, batched, every Nth frame, optional TensorRT |
+
+### Setup (NVIDIA GPU, e.g. RTX 2050)
+
+```bash
+python -m venv .venv-v2
+# Windows: .venv-v2\Scripts\activate    Linux/macOS: source .venv-v2/bin/activate
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+pip install -r requirements-v2.txt
+python scripts/download_models.py --videos   # one-time: weights + 5 sample clips
+```
+
+Without the downloaded weights it falls back to the generic `yolo11n.pt`
+(no goalkeeper/referee classes, weaker ball detection).
+
+### Run
+
+```bash
+streamlit run streamlit_app.py
+python analyze.py --video videos/0bfacc_0.mp4 --preset Fast
+```
+
+Results are written to `outputs/<video name>/`.
+
+### Speed presets (defaults tuned for a 4 GB GPU)
+
+| Preset | Inference size | Detect every | Batch |
+|---|---|---|---|
+| Quality | 1280 | frame | 2 |
+| Balanced (default) | 1280 | 2nd frame | 2 |
+| Fast | 960 | 3rd frame | 4 |
+
+For more speed export to TensorRT with `python scripts/export_engine.py` and
+use the `.engine` file as the player model. On `CUDA out of memory`, lower
+the batch size to 1 or use 960 px.
+
+### Tests
+
+```bash
+pytest -q tests
+```
+
+### Notes
+
+- Works best on wide broadcast camera angles (what the models were trained on).
+- Pass arrows are drawn in screen space and do not follow camera pans.
+- Roboflow code and weights are MIT; Ultralytics YOLO is AGPL-3.0 (fine for
+  personal/academic/open-source use, commercial use needs an Ultralytics licence).
 
 ---
 
